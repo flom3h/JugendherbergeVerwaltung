@@ -86,6 +86,10 @@ components:
   name: column_panel_1
   properties: {}
   type: ColumnPanel
+- layout_properties: {slot: title}
+  name: label_8
+  properties: {text: Jugendherberge Buchen!}
+  type: Label
 container:
   properties: {html: '@theme:standard-page.html'}
   type: HtmlTemplate

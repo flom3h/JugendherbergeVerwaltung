@@ -1,29 +1,60 @@
 components:
 - components:
-  - layout_properties: {grid_position: 'HBNJTJ,LJENXY'}
+  - layout_properties: {grid_position: 'NQWZCL,RRSTLH'}
     name: label_1
-    properties: {text: Startseite Jugendherberge}
+    properties: {align: center, bold: true, font: Arial, icon: 'fa:home', text: Jugendherberge}
     type: Label
-  - event_bindings: {change: drop_down_1_change}
-    layout_properties: {grid_position: 'NQWZCL,TRCVEC'}
-    name: drop_down_1
+  - event_bindings: {change: drop_down_j_change}
+    layout_properties: {grid_position: 'NQWZCL,RRSTLH BOOVRT,XTNDMQ'}
+    name: drop_down_j
     properties: {}
     type: DropDown
-  - components:
-    - name: repeating_panel_1
-      properties: {item_template: Startseite.RowTemplate1}
-      type: RepeatingPanel
-    layout_properties: {grid_position: 'BDVDWE,TCBZKA'}
-    name: data_grid_1
-    properties:
-      columns:
-      - {data_key: column_1, id: JKSDUP, title: Column 1}
-      - {data_key: column_2, id: VJQQOR, title: Column 2}
-      - {data_key: column_3, id: OJLQEN, title: Column 3}
-      - {data_key: column_4, id: ISGBDG, title: Column 4}
-      - {data_key: column_5, id: YGGAEO, title: Column 5}
-      - {data_key: column_6, id: OLUKUP, title: Column 6}
-    type: DataGrid
+  - layout_properties: {grid_position: 'NQWZCL,RRSTLH FEWBTD,GILMYM'}
+    name: label_6
+    properties: {align: center, bold: true, icon: 'fa:bed', text: Zimmer}
+    type: Label
+  - event_bindings: {change: drop_down_z_change}
+    layout_properties: {grid_position: 'NQWZCL,RRSTLH PDYTRL,DKQMRK'}
+    name: drop_down_z
+    properties: {}
+    type: DropDown
+  - layout_properties: {grid_position: 'FFRJTF,EEAZJR'}
+    name: label_4
+    properties: {bold: true, icon: 'fa:calendar-check-o', text: Startdatum}
+    type: Label
+  - event_bindings: {change: date_picker_start_change}
+    layout_properties: {grid_position: 'FFRJTF,CENEVK'}
+    name: date_picker_start
+    properties: {}
+    type: DatePicker
+  - layout_properties: {grid_position: 'WTOIUV,VEWJHX'}
+    name: label_5
+    properties: {bold: true, icon: 'fa:calendar-times-o', text: Enddatum}
+    type: Label
+  - event_bindings: {change: date_picker_end_change}
+    layout_properties: {grid_position: 'WTOIUV,PQYBUM'}
+    name: date_picker_end
+    properties: {}
+    type: DatePicker
+  - layout_properties: {grid_position: 'VCYLNX,MOCNMK'}
+    name: label_7
+    properties: {align: center, bold: true, icon: 'fa:users', text: Mitbucher}
+    type: Label
+  - event_bindings: {change: drop_down_guest_change}
+    layout_properties: {grid_position: 'QIUXGK,HTEMSP'}
+    name: drop_down_guest
+    properties: {}
+    type: DropDown
+  - event_bindings: {click: guest_button_click}
+    layout_properties: {grid_position: 'QIUXGK,IWWSOB'}
+    name: guest_button
+    properties: {background: 'theme:Primary Container', icon: 'fa:user-o', text: Hinzufügen}
+    type: Button
+  - event_bindings: {click: button_book_click}
+    layout_properties: {grid_position: 'XUMKWH,MZAZNZ'}
+    name: button_book
+    properties: {background: 'theme:Primary Container', icon: 'fa:bookmark', text: Jetzt Buchen!}
+    type: Button
   layout_properties: {slot: default}
   name: content_panel
   properties: {col_widths: '{}'}
@@ -32,6 +63,29 @@ components:
   name: navbar_links
   properties: {}
   type: FlowPanel
+- components:
+  - layout_properties: {grid_position: 'LRBJTC,DTKVSI'}
+    name: label_2
+    properties: {align: center, icon: 'fa:user', text: Benutzer}
+    type: Label
+  - event_bindings: {change: drop_down_usr_change}
+    layout_properties: {grid_position: 'AXKOUZ,FBANEM'}
+    name: drop_down_usr
+    properties: {}
+    type: DropDown
+  - layout_properties: {grid_position: 'QKZSFI,ISWHQJ'}
+    name: label_3
+    properties: {align: center, icon: 'fa:euro', text: Preiskategorie}
+    type: Label
+  - event_bindings: {change: drop_down_price_change}
+    layout_properties: {grid_position: 'SQJGPO,DSYBFE'}
+    name: drop_down_price
+    properties: {}
+    type: DropDown
+  layout_properties: {slot: left-nav}
+  name: column_panel_1
+  properties: {}
+  type: ColumnPanel
 container:
   properties: {html: '@theme:standard-page.html'}
   type: HtmlTemplate

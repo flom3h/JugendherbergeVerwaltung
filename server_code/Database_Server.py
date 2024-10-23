@@ -32,9 +32,23 @@ def get_jugendherbergen(rows="*"):
   return res
 
 @anvil.server.callable
-def get_zimmer_for_jugendherberge(jid, columns="*"):
+def get_zimmer_for_jugendherberge(jid, columns="ZID, zimmernummer, bettenanzahl, preis_pro_nacht, gebucht"):
     conn = sqlite3.connect(data_files['jugendherbergen_verwaltung.db'])
     cursor = conn.cursor()
-    res = list(cursor.execute(f"SELECT {columns} FROM zimmer WHERE JID={int(jid)}"))
-    print(res)
-    return res
+    query = f"SELECT {columns} FROM zimmer WHERE JID=?"
+    cursor.execute(query, (jid,))
+    rows = cursor.fetchall()
+    zimmer_list = [
+        {
+            "ZID": row[0],
+            "zimmernummer": row[1],
+            "bettenanzahl": row[2],
+            "preis_pro_nacht": row[3],
+            "gebucht": row[4]
+        }
+        for row in rows
+    ]
+    
+    print(zimmer_list)
+    return zimmer_list
+

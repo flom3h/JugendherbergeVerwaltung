@@ -10,14 +10,11 @@ class Startseite(StartseiteTemplate):
   def __init__(self, **properties):
     # Set Form properties and Data Bindings.
     self.init_components(**properties)
+    self.drop_down_usr.items = [(name, UID) for name, UID in anvil.server.call("get_users")]
+    self.drop_down_price.items = anvil.server.call("get_price_categories")
+    self.drop_down_z.items = [(type_name, room_type_id) for type_name, room_type_id in anvil.server.call("get_room_types")]
+    self.drop_down_guest.items = [(str(count), guest_count_id) for count, guest_count_id in anvil.server.call("get_guest_counts")]
 
-    # [("Feldkirch", 0), ("Mordor", 1)]
-    # Any code you write here will run before the form opens.
-    print(anvil.server.call("get_jugendherbergen"))
-    self.drop_down_1.items = [(name, JID) for name, JID in anvil.server.call("get_jugendherbergen", "name, JID")]
-    if self.drop_down_1.items:
-      self.drop_down_1.selected_value = self.drop_down_1.items[0][1] 
-      print(self.drop_down_1.items)
 
 
   def drop_down_j_change(self, **event_args):
@@ -69,7 +66,17 @@ class Startseite(StartseiteTemplate):
     #ss
     pass
 
-  def button_book_click(self, **event_args):
-    """This method is called when the button is clicked"""
-    #ss
-    pass
+def button_book_click(self, **event_args):
+    """This method is called when the book button is clicked"""
+    selected_room = self.data_grid_1.selected_row  # Ensure the row is selected in data grid
+    if selected_room and not selected_room['gebucht']:
+        result = anvil.server.call("book_room", selected_room["ZID"])
+        if result["status"] == "success":
+            selected_room["gebucht"] = 1  # Update UI without re-fetching data
+            self.data_grid_1.refresh_data_bindings()  # Refresh the grid to show change
+            alert("Room successfully booked!")
+        else:
+            alert("Error occurred while booking.")
+    else:
+        alert("Please select an available room to book.")
+

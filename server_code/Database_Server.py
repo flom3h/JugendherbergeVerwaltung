@@ -19,45 +19,95 @@ import sqlite3
 #   return 42
 #
 @anvil.server.callable
-def get_users():
-    conn = sqlite3.connect(data_files['jugendherbergen_verwaltung.db'])
-    cursor = conn.cursor()
-    res = cursor.execute("SELECT UID, name FROM users").fetchall()
-    return [(row[1], row[0]) for row in res]  # (name, UID) pairs
+def get_benutzer():
+    benutzer_list = []
+    
+    rows = app_tables.tblBenutzer.search()
+    
+    for row in rows:
+        benutzer_list.append({
+            "IDBenutzer": row['IDBenutzer'],
+            "Vorname": row['Vorname'],
+            "Nachname": row['Nachname'],
+            "Email": row['Email'],
+            "Passwort": row['Passwort'],
+            "fkPreiskategorie": row['fkPreiskategorie']
+        })
+    
+    return benutzer_list
 
 @anvil.server.callable
-def get_prices():
-    conn = sqlite3.connect(data_files['jugendherbergen_verwaltung.db'])
-    cursor = conn.cursor()
-    res = cursor.execute("SELECT price_id, price FROM prices").fetchall()
-    return [(str(row[1]), row[0]) for row in res]  # (price, price_id) pairs
+def get_jugendherberge():
+    jugendherberge_list = []
+    
+    rows = app_tables.tblJugendherberge.search()
+    
+    for row in rows:
+        jugendherberge_list.append({
+            "IDJugendherberge": row['IDJugendherberge'],
+            "Name": row['Name']
+        })
+    
+    return jugendherberge_list
 
 @anvil.server.callable
-def get_room_types():
-    conn = sqlite3.connect(data_files['jugendherbergen_verwaltung.db'])
-    cursor = conn.cursor()
-    res = cursor.execute("SELECT room_type_id, type_name FROM room_types").fetchall()
-    return [(row[1], row[0]) for row in res]  # (type_name, room_type_id) pairs
+def get_zimmer():
+    zimmer_list = []
+    
+    rows = app_tables.tblZimmer.search()
+    
+    for row in rows:
+        zimmer_list.append({
+            "IDZimmer": row['IDZimmer'],
+            "MaxBettenanzahl": row['MaxBettenanzahl'],
+            "fkJugendherberge": row['fkJugendherberge'],
+            "fkPreiskategorie": row['fkPreiskategorie']
+        })
+    
+    return zimmer_list
 
 @anvil.server.callable
-def get_price_categories():
-    conn = sqlite3.connect(data_files['jugendherbergen_verwaltung.db'])
-    cursor = conn.cursor()
-    res = cursor.execute("SELECT IDPreiskategorie, Preis FROM tblPreiskategorie").fetchall()
-    return [(f"{price} €", price_id) for price_id, price in res]
-
+def get_preiskategorie():
+    preiskategorie_list = []
+    
+    rows = app_tables.tblPreiskategorie.search()
+    
+    for row in rows:
+        preiskategorie_list.append({
+            "IDPreiskategorie": row['IDPreiskategorie'],
+            "Preis": row['Preis']
+        })
+    
+    return preiskategorie_list
 
 @anvil.server.callable
-def get_guest_counts():
-    conn = sqlite3.connect(data_files['jugendherbergen_verwaltung.db'])
-    cursor = conn.cursor()
-    res = cursor.execute("SELECT guest_count_id, count FROM guest_counts").fetchall()
-    return [(str(row[1]), row[0]) for row in res]  # (count, guest_count_id) pairs
+def get_buchung():
+    buchung_list = []
+    
+    rows = app_tables.tblBuchung.search()
+    
+    for row in rows:
+        buchung_list.append({
+            "IDBuchung": row['IDBuchung'],
+            "Startzeit": row['Startzeit'],
+            "Endzeit": row['Endzeit'],
+            "fkZimmer": row['fkZimmer']
+        })
+    
+    return buchung_list
 
 @anvil.server.callable
-def book_room(zid):
-    conn = sqlite3.connect(data_files['jugendherbergen_verwaltung.db'])
-    cursor = conn.cursor()
-    cursor.execute("UPDATE zimmer SET gebucht = 1 WHERE ZID = ?", (zid,))
-    conn.commit()
-    return {"status": "success"}
+def get_buchung_benutzer():
+    buchung_benutzer_list = []
+    
+    rows = app_tables.tblBuchungBenutzer.search()
+    
+    for row in rows:
+        buchung_benutzer_list.append({
+            "IDBB": row['IDBB'],
+            "IDBenutzer": row['IDBenutzer'],
+            "IDBuchung": row['IDBuchung'],
+            "Benutzerrolle": row['Benutzerrolle']
+        })
+    
+    return buchung_benutzer_list

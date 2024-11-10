@@ -10,7 +10,7 @@ class Startseite(StartseiteTemplate):
   def __init__(self, **properties):
     # Set Form properties and Data Bindings.
     self.init_components(**properties)
-    self.drop_down_usr.items = anvil.server.call('test_table_access')
+    self.drop_down_usr.items = anvil.server.call('get_user')
 
 
 

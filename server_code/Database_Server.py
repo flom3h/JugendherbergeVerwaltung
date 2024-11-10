@@ -6,69 +6,55 @@ from anvil.tables import app_tables
 import anvil.server
 import sqlite3 
 
-# This is a server module. It runs on the Anvil server,
-# rather than in the user's browser.
-#
-# To allow anvil.server.call() to call functions here, we mark
-# them with @anvil.server.callable.
-# Here is an example - you can replace it with your own:
-#
-# @anvil.server.callable
-# def say_hello(name):
-#   print("Hello, " + name + "!")
-#   return 42
-#
-
-
 @anvil.server.callable
-def get_hostel():
+def get_location():
   con = sqlite3.connect(data_files["jugendherbergen_verwaltung.db"])
   cursor = con.cursor()
-  data = list(cursor.execute("SELECT name, JID FROM jugendherbergen"))
+  location_data = list(cursor.execute("SELECT name, JID FROM jugendherbergen"))
   con.commit()
   con.close()
-  return data
+  return location_data
 
 @anvil.server.callable
 def get_user():
   con = sqlite3.connect(data_files["jugendherbergen_verwaltung.db"])
   cursor = con.cursor()
-  data = list(cursor.execute("SELECT vorname, BeID FROM benutzer;"))
+  user_data = list(cursor.execute("SELECT vorname, BeID FROM benutzer;"))
   con.commit()
   con.close()
-  return data
+  return user_data
 
 @anvil.server.callable 
-def get_price():
+def get_category():
   con = sqlite3.connect(data_files["jugendherbergen_verwaltung.db"])
   cursor = con.cursor()
-  data = list(cursor.execute("SELECT name || ' ' || preis || '€' AS NamePreis, PID FROM preiskategorie;"))
+  category_data = list(cursor.execute("SELECT name || ' ' || preis || '€' AS NamePreis, PID FROM preiskategorie;"))
   con.commit()
   con.close()
-  return data
-  
-@anvil.server.callable
-def get_room(hostel_id, price_id):
-  con = sqlite3.connect(data_files["jugendherbergen_verwaltung.db"])
-  cursor = con.cursor()
-  data = list(cursor.execute(f"SELECT 'NR:' || ZID || ' BETTEN: ' ||bettenZahl AS NummerBettZahl, ZID FROM zimmer WHERE JID={hostel_id} AND PID = {price_id};"))
-  con.commit()
-  con.close()
-  return data
+  return category_data
 
 @anvil.server.callable
-def booking(user, start_date, end_date,ZID):
+def get_selection(location_id, category_id):
+  con = sqlite3.connect(data_files["jugendherbergen_verwaltung.db"])
+  cursor = con.cursor()
+  selection_data = list(cursor.execute(f"SELECT 'NR:' || ZID || ' BETTEN: ' || bettenZahl AS NummerBettZahl, ZID FROM zimmer WHERE JID={location_id} AND PID = {category_id};"))
+  con.commit()
+  con.close()
+  return selection_data
+
+@anvil.server.callable
+def booking(user_ids, start_date, end_date, selection_id):
   con = sqlite3.connect(data_files["jugendherbergen_verwaltung.db"])
   cursor = con.cursor()
   print(start_date)
-  cursor.execute(f"INSERT INTO buchung (startDatum, endDatum, ZID) VALUES ('{start_date}','{end_date}',{ZID}); ")
+  cursor.execute(f"INSERT INTO buchung (startDatum, endDatum, ZID) VALUES ('{start_date}', '{end_date}', {selection_id}); ")
   con.commit()
-  BeID = cursor.lastrowid
-  for user_id in user:
-    cursor.execute(f"INSERT INTO benutzerBuchung (BuID, BeID) VALUES ({BeID}, {user_id});")
+  booking_id = cursor.lastrowid
+  for user_id in user_ids:
+    cursor.execute(f"INSERT INTO benutzerBuchung (BuID, BeID) VALUES ({booking_id}, {user_id});")
     con.commit()
   con.close()
-  
+
 @anvil.server.callable
 def get_data():
   con = sqlite3.connect(data_files["jugendherbergen_verwaltung.db"])

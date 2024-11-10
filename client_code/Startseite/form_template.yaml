@@ -6,7 +6,7 @@ components:
     type: Label
   - event_bindings: {change: drop_down_j_change}
     layout_properties: {grid_position: 'NQWZCL,RRSTLH BOOVRT,XTNDMQ'}
-    name: drop_down_j
+    name: dropdown_j
     properties: {}
     type: DropDown
   - layout_properties: {grid_position: 'NQWZCL,RRSTLH FEWBTD,GILMYM'}
@@ -15,7 +15,7 @@ components:
     type: Label
   - event_bindings: {change: drop_down_z_change}
     layout_properties: {grid_position: 'NQWZCL,RRSTLH PDYTRL,DKQMRK'}
-    name: drop_down_z
+    name: dropdown_z
     properties: {}
     type: DropDown
   - layout_properties: {grid_position: 'FFRJTF,EEAZJR'}
@@ -24,7 +24,7 @@ components:
     type: Label
   - event_bindings: {change: date_picker_start_change}
     layout_properties: {grid_position: 'FFRJTF,CENEVK'}
-    name: date_picker_start
+    name: datepicker_start
     properties: {}
     type: DatePicker
   - layout_properties: {grid_position: 'WTOIUV,VEWJHX'}
@@ -33,7 +33,7 @@ components:
     type: Label
   - event_bindings: {change: date_picker_end_change}
     layout_properties: {grid_position: 'WTOIUV,PQYBUM'}
-    name: date_picker_end
+    name: datepicker_end
     properties: {}
     type: DatePicker
   - layout_properties: {grid_position: 'VCYLNX,MOCNMK'}
@@ -42,7 +42,7 @@ components:
     type: Label
   - event_bindings: {change: drop_down_guest_change}
     layout_properties: {grid_position: 'QIUXGK,HTEMSP'}
-    name: drop_down_guest
+    name: dropdown_guest
     properties: {}
     type: DropDown
   - event_bindings: {click: guest_button_click}
@@ -61,6 +61,9 @@ components:
       - {data_key: column_1, id: JKSDUP, title: Column 1}
       - {data_key: column_2, id: VJQQOR, title: Column 2}
       - {data_key: column_3, id: OJLQEN, title: Column 3}
+      - {data_key: column_4, id: EANXLS, title: Column 4}
+      - {data_key: column_5, id: CWHWQB, title: Column 5}
+      - {data_key: column_6, id: OOJNIY, title: Column 6}
     type: DataGrid
   - event_bindings: {click: button_book_click}
     layout_properties: {grid_position: 'XUMKWH,MZAZNZ'}
@@ -82,7 +85,7 @@ components:
     type: Label
   - event_bindings: {change: drop_down_usr_change}
     layout_properties: {grid_position: 'AXKOUZ,FBANEM'}
-    name: drop_down_usr
+    name: dropdown_usr
     properties: {}
     type: DropDown
   - layout_properties: {grid_position: 'QKZSFI,ISWHQJ'}
@@ -91,7 +94,7 @@ components:
     type: Label
   - event_bindings: {change: drop_down_price_change}
     layout_properties: {grid_position: 'SQJGPO,DSYBFE'}
-    name: drop_down_price
+    name: dropdown_price
     properties: {}
     type: DropDown
   layout_properties: {slot: left-nav}

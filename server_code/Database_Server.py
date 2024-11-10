@@ -1,10 +1,10 @@
+import anvil.files
+from anvil.files import data_files
 import anvil.tables as tables
 import anvil.tables.query as q
 from anvil.tables import app_tables
-import anvil.files
-from anvil.files import data_files
 import anvil.server
-import sqlite3
+import sqlite3 
 
 # This is a server module. It runs on the Anvil server,
 # rather than in the user's browser.
@@ -18,89 +18,62 @@ import sqlite3
 #   print("Hello, " + name + "!")
 #   return 42
 #
-@anvil.server.callable
-def get_user(rows="*"):
-  conn = sqlite3.connect(data_files['jugendherbergen_verwaltung.db'])
-  cursor = conn.cursor()
-  res = list(cursor.execute(f"SELECT {rows} FROM tblBenutzer"))
-  print(res)
-  return res
-
-@anvil.server.callable
-def get_jugendherbergen(rows="*"):
-  conn = sqlite3.connect(data_files['jugendherbergen_verwaltung.db'])
-  cursor = conn.cursor()
-  res = list(cursor.execute(f"SELECT {rows} FROM jugendherbergen"))
-  print(res)
-  return res
-
-@anvil.server.callable
-def get_zimmer(rows="*"):
-  conn = sqlite3.connect(data_files['jugendherbergen_verwaltung.db'])
-  cursor = conn.cursor()
-  res = list(cursor.execute(f"SELECT {rows} FROM zimmer"))
-  print(res)
-  return res
-
-@anvil.server.callable
-def get_preiskategorie(rows="*"):
-  conn = sqlite3.connect(data_files['jugendherbergen_verwaltung.db'])
-  cursor = conn.cursor()
-  res = list(cursor.execute(f"SELECT {rows} FROM preiskategorie"))
-  print(res)
-  return res
-
-@anvil.server.callable
-def get_buchung():
-  conn = sqlite3.connect(data_files['jugendherbergen_verwaltung.db'])
-  cursor = conn.cursor()
-  res = list(cursor.execute(f"SELECT {rows} FROM jugendherbergen"))
-  print(res)
-  return res
-
-@anvil.server.callable
-def get_buchung_benutzer():
-  conn = sqlite3.connect(data_files['jugendherbergen_verwaltung.db'])
-  cursor = conn.cursor()
-  res = list(cursor.execute(f"SELECT {rows} FROM jugendherbergen"))
-  print(res)
-  return res
 
 
 @anvil.server.callable
-def get_available_dates(room_id, start_date, end_date):
-    bookings = app_tables.tblBuchung.search(fkZimmer=room_id)
-    for booking in bookings:
-        if (start_date <= booking['Endzeit'] and end_date >= booking['Startzeit']):
-            return False  # Room is not available
-    return True  # Room is available
+def get_hostel():
+  con = sqlite3.connect(data_files["jugendherbergen_verwaltung.db"])
+  cursor = con.cursor()
+  data = list(cursor.execute("SELECT name, JID FROM jugendherbergen"))
+  con.commit()
+  con.close()
+  return data
 
 @anvil.server.callable
-def confirm_booking(user_id, room_id, start_date, end_date, mitbucher_ids):
-    # First, check if room is available
-    if not get_available_dates(room_id, start_date, end_date):
-        return "Room is not available for the selected dates."
+def get_user():
+  con = sqlite3.connect(data_files["jugendherbergen_verwaltung.db"])
+  cursor = con.cursor()
+  data = list(cursor.execute("SELECT vorname, BeID FROM benutzer;"))
+  con.commit()
+  con.close()
+  return data
 
-    # Add booking to tblBuchung
-    booking = app_tables.tblBuchung.add_row(
-        Startzeit=start_date,
-        Endzeit=end_date,
-        fkZimmer=room_id
-    )
+@anvil.server.callable 
+def get_price():
+  con = sqlite3.connect(data_files["jugendherbergen_verwaltung.db"])
+  cursor = con.cursor()
+  data = list(cursor.execute("SELECT name || ' ' || preis || '€' AS NamePreis, PID FROM preiskategorie;"))
+  con.commit()
+  con.close()
+  return data
+  
+@anvil.server.callable
+def get_room(hostel_id, price_id):
+  con = sqlite3.connect(data_files["jugendherbergen_verwaltung.db"])
+  cursor = con.cursor()
+  data = list(cursor.execute(f"SELECT 'NR:' || ZID || ' BETTEN: ' ||bettenZahl AS NummerBettZahl, ZID FROM zimmer WHERE JID={hostel_id} AND PID = {price_id};"))
+  con.commit()
+  con.close()
+  return data
 
-    # Link the main user to the booking
-    app_tables.tblBuchungBenutzer.add_row(
-        IDBenutzer=user_id,
-        IDBuchung=booking['IDBuchung'],
-        Benutzerrolle="Main"
-    )
-
-    # Link additional mitbucher
-    for mitbucher_id in mitbucher_ids:
-        app_tables.tblBuchungBenutzer.add_row(
-            IDBenutzer=mitbucher_id,
-            IDBuchung=booking['IDBuchung'],
-            Benutzerrolle="Mitbucher"
-        )
-
-    return "Booking confirmed!"
+@anvil.server.callable
+def booking(user, start_date, end_date,ZID):
+  con = sqlite3.connect(data_files["jugendherbergen_verwaltung.db"])
+  cursor = con.cursor()
+  print(start_date)
+  cursor.execute(f"INSERT INTO buchung (startDatum, endDatum, ZID) VALUES ('{start_date}','{end_date}',{ZID}); ")
+  con.commit()
+  BeID = cursor.lastrowid
+  for user_id in user:
+    cursor.execute(f"INSERT INTO benutzerBuchung (BuID, BeID) VALUES ({BeID}, {user_id});")
+    con.commit()
+  con.close()
+  
+@anvil.server.callable
+def get_data():
+  con = sqlite3.connect(data_files["jugendherbergen_verwaltung.db"])
+  cursor = con.cursor()
+  data = list(cursor.execute("SELECT * FROM view_benutzerBuchung;"))
+  con.commit()
+  con.close()
+  return data
